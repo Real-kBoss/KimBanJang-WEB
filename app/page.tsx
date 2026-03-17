@@ -128,7 +128,7 @@ function ReceiptForm() {
 
     } catch (error: any) {
       console.error(error);
-      alert(error.message || "접수 중 오류가 발생했습니다. 다시 시도해주세요.");
+      alert("접수 중 일시적인 오류가 발생했습니다. 잠시 후 다시 시도해 주시거나 관리자에게 문의해 주세요.");
     } finally {
       setIsSubmitting(false);
     }
