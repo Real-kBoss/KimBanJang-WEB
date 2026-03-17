@@ -182,27 +182,27 @@ function ReceiptForm() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f0f4f9] py-8 px-4 font-sans sm:px-6 lg:px-8 flex justify-center">
+    <div className="min-h-screen bg-[#f0f4f9] py-4 sm:py-8 px-4 font-sans sm:px-6 lg:px-8 flex justify-center">
       <Script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" strategy="lazyOnload" />
 
-      <div className="max-w-2xl w-full space-y-4">
+      <div className="max-w-2xl w-full space-y-3 sm:space-y-4">
         
         {/* 헤더 섹션 (구글 폼 스타일 상단 띠) */}
-        <div className="bg-white rounded-xl shadow-sm border-t-8 border-blue-600 p-8">
-          <h1 className="text-3xl font-semibold text-gray-900 mb-3">🛠️ 김반장 AI 무인 접수</h1>
-          <p className="text-gray-600 mb-2">
+        <div className="bg-white rounded-xl shadow-sm border-t-8 border-blue-600 p-5 sm:p-8">
+          <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 mb-2 sm:mb-3">🛠️ 김반장 AI 무인 접수</h1>
+          <p className="text-sm sm:text-base text-gray-600 mb-2">
             빠르고 간편하게 접수해 주세요. 확인 후 신속하게 연락드리겠습니다.
           </p>
-          <div className="border-t border-gray-200 mt-4 pt-4">
-            <span className="text-red-500 font-medium text-sm">* 필수항목</span>
+          <div className="border-t border-gray-200 mt-3 pt-3 sm:mt-4 sm:pt-4">
+            <span className="text-red-500 font-medium text-xs sm:text-sm">* 필수항목</span>
           </div>
         </div>
         
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
           
           {/* 1. 연락처 */}
-          <div className="bg-white rounded-xl shadow-sm p-6 pb-8 transition-shadow hover:shadow-md">
-            <label className="flex items-center text-base font-medium text-gray-900 mb-4">
+          <div className="bg-white rounded-xl shadow-sm p-5 pb-6 sm:p-6 sm:pb-8 transition-shadow hover:shadow-md">
+            <label className="flex items-center text-sm sm:text-base font-medium text-gray-900 mb-3 sm:mb-4">
               연락처 <span className="text-red-500 ml-1">*</span>
             </label>
             <div className="flex items-center">
@@ -220,8 +220,8 @@ function ReceiptForm() {
           </div>
 
           {/* 2. 방문 주소 */}
-          <div className="bg-white rounded-xl shadow-sm p-6 pb-8 transition-shadow hover:shadow-md">
-            <label className="flex items-center text-base font-medium text-gray-900 mb-4">
+          <div className="bg-white rounded-xl shadow-sm p-5 pb-6 sm:p-6 sm:pb-8 transition-shadow hover:shadow-md">
+            <label className="flex items-center text-sm sm:text-base font-medium text-gray-900 mb-3 sm:mb-4">
               방문 주소 <span className="text-red-500 ml-1">*</span>
             </label>
             <div className="flex items-center">
@@ -260,8 +260,8 @@ function ReceiptForm() {
           </div>
 
           {/* 3. 증상 */}
-          <div className="bg-white rounded-xl shadow-sm p-6 pb-8 transition-shadow hover:shadow-md">
-            <label className="flex items-center text-base font-medium text-gray-900 mb-4">
+          <div className="bg-white rounded-xl shadow-sm p-5 pb-6 sm:p-6 sm:pb-8 transition-shadow hover:shadow-md">
+            <label className="flex items-center text-sm sm:text-base font-medium text-gray-900 mb-3 sm:mb-4">
               고장/수리 증상 <span className="text-red-500 ml-1">*</span>
             </label>
             <div className="flex items-start">
@@ -270,7 +270,7 @@ function ReceiptForm() {
                 value={symptom}
                 onChange={(e) => setSymptom(e.target.value)}
                 placeholder="상세 내용을 적어주세요"
-                rows={3}
+                rows={2}
                 className="w-full border-b border-gray-300 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-600 focus:border-b-2 transition-colors bg-transparent resize-none"
                 disabled={isSubmitting}
               />
@@ -278,8 +278,8 @@ function ReceiptForm() {
           </div>
 
           {/* 4. 사진 첨부 */}
-          <div className="bg-white rounded-xl shadow-sm p-6 pb-8 transition-shadow hover:shadow-md">
-            <label className="flex items-center text-base font-medium text-gray-900 mb-4">
+          <div className="bg-white rounded-xl shadow-sm p-5 pb-6 sm:p-6 sm:pb-8 transition-shadow hover:shadow-md">
+            <label className="flex items-center text-sm sm:text-base font-medium text-gray-900 mb-3 sm:mb-4">
               현장 사진 (선택)
             </label>
             <div className="flex items-center">
