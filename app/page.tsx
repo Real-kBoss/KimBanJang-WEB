@@ -16,13 +16,13 @@ function ReceiptForm() {
   const [address, setAddress] = useState("");
   const [detailAddress, setDetailAddress] = useState("");
   const [symptom, setSymptom] = useState("");
-  const [photo, setPhoto] = useState<File | null>(null);
+  const [photos, setPhotos] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false); // 접수 완료 상태 추가
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setPhoto(e.target.files[0]);
+    if (e.target.files) {
+      setPhotos(Array.from(e.target.files));
     }
   };
 
@@ -73,26 +73,30 @@ function ReceiptForm() {
     setIsSubmitting(true);
 
     try {
-      let photoUrl = null;
+      let photoUrls: string[] = [];
 
-      // 1. 사진이 있다면 Supabase Storage 'photos' 버킷에 업로드
-      if (photo) {
-        const fileExt = photo.name.split('.').pop();
-        const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
-        const filePath = `receipts/${fileName}`;
+      // 1. 사진이 있다면 Supabase Storage 'photos' 버킷에 모두 업로드
+      if (photos.length > 0) {
+        const uploadPromises = photos.map(async (file) => {
+          const fileExt = file.name.split('.').pop();
+          const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
+          const filePath = `receipts/${fileName}`;
 
-        const { error: uploadError } = await supabase.storage
-          .from('photos')
-          .upload(filePath, photo);
+          const { error: uploadError } = await supabase.storage
+            .from('photos')
+            .upload(filePath, file);
 
-        if (uploadError) throw new Error(`이미지 업로드 실패: ${uploadError.message}`);
+          if (uploadError) throw new Error(`이미지 업로드 실패: ${uploadError.message}`);
 
-        // 1-1. 업로드된 이미지의 공개 URL 가져오기
-        const { data: publicUrlData } = supabase.storage
-          .from('photos')
-          .getPublicUrl(filePath);
-          
-        photoUrl = publicUrlData.publicUrl;
+          // 1-1. 업로드된 이미지의 공개 URL 가져오기
+          const { data: publicUrlData } = supabase.storage
+            .from('photos')
+            .getPublicUrl(filePath);
+            
+          return publicUrlData.publicUrl;
+        });
+
+        photoUrls = await Promise.all(uploadPromises);
       }
 
       // 2. 웹 폼 제출 시 Supabase 'consultations' 테이블로 전송할 데이터 페이로드 구성
@@ -102,7 +106,7 @@ function ReceiptForm() {
         address,
         detail_address: detailAddress,
         summary: symptom,
-        photo_url: photoUrl,
+        photo_url: photoUrls.length > 0 ? photoUrls.join(',') : null,
         is_ai_received: true
       };
 
@@ -120,7 +124,7 @@ function ReceiptForm() {
       setDetailAddress("");
       setAddress("");
       setSymptom("");
-      setPhoto(null);
+      setPhotos([]);
 
     } catch (error: any) {
       console.error(error);
@@ -283,11 +287,17 @@ function ReceiptForm() {
               <input
                 type="file"
                 accept="image/*"
+              multiple
                 onChange={handlePhotoChange}
                 className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border file:border-gray-300 file:text-sm file:font-medium file:bg-white file:text-gray-700 hover:file:bg-gray-50 cursor-pointer"
                 disabled={isSubmitting}
               />
             </div>
+          {photos.length > 0 && (
+            <p className="mt-2 ml-8 text-sm text-blue-600 font-medium">
+              ✅ 총 {photos.length}장의 사진이 선택되었습니다.
+            </p>
+          )}
           </div>
 
           {/* 제출 버튼 */}
