@@ -106,7 +106,7 @@ function ReceiptForm() {
         address,
         detail_address: detailAddress,
         summary: symptom,
-        photo_url: photoUrls.length > 0 ? photoUrls.join(',') : null,
+        images: photoUrls.length > 0 ? photoUrls : null,
         is_ai_received: true
       };
 
