@@ -2,7 +2,7 @@
 
 import { useState, Suspense } from "react";
 import { supabase } from "./supabase";
-import { Camera, Send, MapPin, Phone, AlertCircle, CheckCircle } from "lucide-react";
+import { Camera, Send, MapPin, Phone, AlertCircle, CheckCircle, Loader2 } from "lucide-react";
 import Script from "next/script";
 import { useSearchParams, useRouter } from "next/navigation";
 
@@ -29,6 +29,16 @@ function ReceiptForm() {
         setPhotos([]);
         return;
       }
+
+      const maxSize = 10 * 1024 * 1024; // 10MB 제한 (10 * 1024 * 1024 bytes)
+      const hasLargeFile = selectedFiles.some((file) => file.size > maxSize);
+      if (hasLargeFile) {
+        alert("사진 용량은 장당 10MB를 초과할 수 없습니다.");
+        e.target.value = ""; // 파일 선택 창 초기화
+        setPhotos([]);
+        return;
+      }
+
       setPhotos(selectedFiles);
     }
   };
@@ -113,7 +123,7 @@ function ReceiptForm() {
         address,
         detail_address: detailAddress,
         summary: symptom,
-        images: photoUrls.length > 0 ? photoUrls : [], // 업로드된 모든 사진 URL을 배열로 전송 (사진이 없으면 빈 배열)
+        images: photoUrls.length > 0 ? photoUrls : null, // text[] 컬럼 규격에 맞게 배열 전송 (사진이 없으면 null 처리)
         is_ai_received: true
       };
 
@@ -287,7 +297,7 @@ function ReceiptForm() {
           {/* 4. 사진 첨부 */}
           <div className="bg-white rounded-xl shadow-sm p-4 pb-4 sm:p-6 sm:pb-8 transition-shadow hover:shadow-md">
             <label className="flex items-center text-sm sm:text-base font-medium text-gray-900 mb-2 sm:mb-4">
-              현장 사진 (선택, 최대 5장)
+              현장 사진 (선택, 최대 2장, 장당 10MB 이하)
             </label>
             <div className="flex items-center">
               <Camera className="w-5 h-5 text-gray-400 mr-3" />
@@ -314,7 +324,14 @@ function ReceiptForm() {
               disabled={isSubmitting}
               className="bg-blue-600 text-white font-medium rounded px-6 py-2.5 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors disabled:bg-blue-400 flex items-center shadow-sm"
             >
-              {isSubmitting ? "제출 중..." : "제출"}
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                  제출 중...
+                </>
+              ) : (
+                "제출"
+              )}
             </button>
             <span className="text-sm text-gray-500 font-medium">
               김반장 AI 접수 시스템
