@@ -135,7 +135,7 @@ function ReceiptForm() {
 
     } catch (error: any) {
       console.error(error);
-      alert("접수 중 일시적인 오류가 발생했습니다. 잠시 후 다시 시도해 주시거나 관리자에게 문의해 주세요.");
+      alert(`[디버그용 상세 오류]\n${error.message || JSON.stringify(error)}`);
     } finally {
       setIsSubmitting(false);
     }
